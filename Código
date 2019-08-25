@@ -1,0 +1,203 @@
+import tkinter as tk
+import requests
+from bs4 import BeautifulSoup
+
+r = requests.get('https://economia.uol.com.br/cotacoes/')
+sabao = BeautifulSoup(r.text , 'html.parser')
+
+'''Dólar'''
+try:
+	ensaboado = sabao.find_all(class_="subtituloGrafico subtituloGraficoValor")[0]
+	remove = (ensaboado.text).replace("R$", "")
+	cotacaodolar = float(remove.replace(",", "."))
+except Exception:
+	from dolareuro import jogadolar
+	cotacaodolar = jogadolar()
+
+'''Euro'''
+try:
+	ensaboado2 = sabao.find_all(class_="subtituloGrafico subtituloGraficoValor")[2]
+	rem = (ensaboado2.text).replace("R$", "")
+	cotacaoeuro = float(rem.replace(",", "."))
+except Exception:
+	from dolareuro import jogaeuro
+	cotacaoeuro = jogaeuro()
+
+
+
+'''Data de atualização'''
+try:
+	ensaboado3 = sabao.find(class_="section-info")
+	data = (ensaboado3.text).replace("Câmbio","").replace("    ", " ")
+except Exception:
+	data = " Atualizado em não encontrado "
+
+'''Bitcoin'''
+try:
+	ensaboado4 = sabao.find_all(class_="linhaDados")[3]
+	r = (ensaboado4.text).replace("Bitcoin","").replace("%US$","")
+	l = r.split()
+	cotacaobitcoin = cotacaodolar*float(str(l.pop(1)).replace(".","").replace(",","."))
+except Exception:
+	from dolareuro import jogabit
+	cotacaobitcoin = jogabit()
+
+
+cotacaobitcoindol = cotacaodolar/cotacaobitcoin
+cotacaobitcoineur = cotacaoeuro/cotacaobitcoin
+
+
+'''Notícia'''
+try:
+	ensaboado5 = sabao.find_all('h1')[0]
+	noticia = ensaboado5.text
+except Exception:
+	noticia = "Não encontrado"
+
+
+class App(tk.Tk):
+    def __init__(self):
+        tk.Tk.__init__(self)
+    
+        self.news = tk.Label(self,text= noticia)
+        self.bolar = tk.Button(self,text="Dólar", command= self.conversordol)
+        self.beuro = tk.Button(self,text="Euro", command= self.conversoreuro)
+        self.breal = tk.Button(self,text="Real", command= self.conversorreal)
+        
+        
+        self.resultado = tk.Label(self,text="")
+        
+        self.news.pack()
+        self.bolar.pack(fill= tk.X)
+        self.beuro.pack(fill= tk.X)
+        self.breal.pack(fill= tk.X)
+        
+    def conversordol(self):
+
+        def converteae():
+            self.valor_real = str(round(cotacaodolar*float(self.qdol.get()),2))
+            self.valor_euro = str(round((cotacaodolar/cotacaoeuro)*float(self.qdol.get()),2))
+            self.resultado['text'] = self.valor_euro + " Euros\n" + self.valor_real + " Reais" 
+        def voltar():
+            self.qdol.pack_forget()
+            self.conv.pack_forget()
+            self.resultado.pack_forget()
+            self.bvoltar.pack_forget()
+
+            self.news.pack()
+            self.bolar.pack(fill= tk.X)
+            self.beuro.pack(fill= tk.X)
+            self.breal.pack(fill= tk.X)
+
+            self.resultado['text'] = ""
+            self.news['text'] = noticia
+            
+            
+
+
+    
+        self.qdol = tk.Entry(self)
+        self.news['text'] = "Valor em Dólar:"
+        self.conv = tk.Button(self,text="Converter", command= converteae)
+        self.bvoltar = tk.Button(self,text="Voltar", command= voltar)
+
+        self.bolar.pack_forget()
+        self.beuro.pack_forget()
+        self.breal.pack_forget()
+
+        self.qdol.pack()
+        self.conv.pack()
+        self.bvoltar.pack()
+        self.resultado.pack()
+        
+        
+            
+
+    def conversoreuro(self):
+        
+        def converteae():
+            self.valor_real = str(round(cotacaodolar*float(self.qeuro.get()),2))
+            self.valor_dolar = str(round((cotacaoeuro/cotacaodolar)*float(self.qeuro.get()),2))
+            self.resultado['text'] = self.valor_dolar + " Dólares\n" + self.valor_real + " Reais" 
+        def voltar():
+            self.qeuro.pack_forget()
+            self.conv.pack_forget()
+            self.resultado.pack_forget()
+            self.bvoltar.pack_forget()
+
+            self.news.pack()
+            self.bolar.pack(fill= tk.X)
+            self.beuro.pack(fill= tk.X)
+            self.breal.pack(fill= tk.X)
+
+            self.resultado['text'] = ""
+            self.news['text'] = noticia
+            
+            
+
+
+    
+        self.qeuro = tk.Entry(self)
+        self.news['text'] = "Valor em Euro:"
+        self.conv = tk.Button(self,text="Converter", command= converteae)
+        self.bvoltar = tk.Button(self,text="Voltar", command= voltar)
+
+        self.bolar.pack_forget()
+        self.beuro.pack_forget()
+        self.breal.pack_forget()
+
+        self.qeuro.pack()
+        self.conv.pack()
+        self.bvoltar.pack()
+        self.resultado.pack()
+
+
+
+        
+    def conversorreal(self):
+       
+        def converteae():
+            self.valor_dolar = str(round((1/cotacaodolar)*float(self.qreal.get()),2))
+            self.valor_euro = str(round((1/cotacaoeuro)*float(self.qreal.get()),2))
+            self.resultado['text'] = self.valor_euro + " Euros\n" + self.valor_dolar + " Dólares" 
+        def voltar():
+            self.qreal.pack_forget()
+            self.conv.pack_forget()
+            self.resultado.pack_forget()
+            self.bvoltar.pack_forget()
+
+            self.news.pack()
+            self.bolar.pack(fill= tk.X)
+            self.beuro.pack(fill= tk.X)
+            self.breal.pack(fill= tk.X)
+
+            self.resultado['text'] = ""
+            self.news['text'] = noticia
+            
+            
+
+
+      
+        self.qreal = tk.Entry(self)
+        self.news['text'] = "Valor em Real:"
+        self.conv = tk.Button(self,text="Converter", command= converteae)
+        self.bvoltar = tk.Button(self,text="Voltar", command= voltar)
+
+        self.bolar.pack_forget()
+        self.beuro.pack_forget()
+        self.breal.pack_forget()
+
+        self.qreal.pack()
+        self.conv.pack()
+        self.bvoltar.pack()
+        self.resultado.pack()
+        
+    
+
+
+
+
+Conversor = App()
+Conversor.geometry('600x200')
+Conversor.title("Conversor Monetário")
+Conversor.mainloop()
