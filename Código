@@ -54,16 +54,18 @@ try:
 except Exception:
 	noticia = "Não encontrado"
 
+detalhes = "Conversor Monetário desenvolvido por InimigoMortal\nNotícia: "
 
 class App(tk.Tk):
     def __init__(self):
         tk.Tk.__init__(self)
     
-        self.news = tk.Label(self,text= noticia)
+        self.atualizado =tk.Label(self,text = data)
+        self.news = tk.Label(self,text= detalhes+noticia)
         self.bolar = tk.Button(self,text="Dólar", command= self.conversordol)
         self.beuro = tk.Button(self,text="Euro", command= self.conversoreuro)
         self.breal = tk.Button(self,text="Real", command= self.conversorreal)
-        
+        self.bbitcoin = tk.Button(self,text="Bitcoin", command= self.conversorbit)
         
         self.resultado = tk.Label(self,text="")
         
@@ -71,13 +73,15 @@ class App(tk.Tk):
         self.bolar.pack(fill= tk.X)
         self.beuro.pack(fill= tk.X)
         self.breal.pack(fill= tk.X)
-        
+        self.bbitcoin.pack(fill= tk.X)
+        self.atualizado.place(x=5,y=180)
     def conversordol(self):
 
         def converteae():
             self.valor_real = str(round(cotacaodolar*float(self.qdol.get()),2))
             self.valor_euro = str(round((cotacaodolar/cotacaoeuro)*float(self.qdol.get()),2))
-            self.resultado['text'] = self.valor_euro + " Euros\n" + self.valor_real + " Reais" 
+            self.valor_bitcoin = str(round(cotacaobitcoindol*float(self.qdol.get()),5))
+            self.resultado['text'] = self.valor_bitcoin + " Bitcoins\n" +  self.valor_euro + " Euros\n" + self.valor_real + " Reais" 
         def voltar():
             self.qdol.pack_forget()
             self.conv.pack_forget()
@@ -88,9 +92,11 @@ class App(tk.Tk):
             self.bolar.pack(fill= tk.X)
             self.beuro.pack(fill= tk.X)
             self.breal.pack(fill= tk.X)
+            self.bbitcoin.pack(fill= tk.X)
+            self.atualizado['text'] = data
 
             self.resultado['text'] = ""
-            self.news['text'] = noticia
+            self.news['text'] = detalhes+noticia
             
             
 
@@ -104,6 +110,8 @@ class App(tk.Tk):
         self.bolar.pack_forget()
         self.beuro.pack_forget()
         self.breal.pack_forget()
+        self.bbitcoin.pack_forget()
+        self.atualizado['text'] = ""
 
         self.qdol.pack()
         self.conv.pack()
@@ -118,7 +126,8 @@ class App(tk.Tk):
         def converteae():
             self.valor_real = str(round(cotacaodolar*float(self.qeuro.get()),2))
             self.valor_dolar = str(round((cotacaoeuro/cotacaodolar)*float(self.qeuro.get()),2))
-            self.resultado['text'] = self.valor_dolar + " Dólares\n" + self.valor_real + " Reais" 
+            self.valor_bitcoin = str(round(cotacaobitcoineur*float(self.qeuro.get()), 5))
+            self.resultado['text'] = self.valor_dolar + " Dólares\n" + self.valor_real + " Reais\n" + self.valor_bitcoin + " Bitcoins"
         def voltar():
             self.qeuro.pack_forget()
             self.conv.pack_forget()
@@ -129,9 +138,11 @@ class App(tk.Tk):
             self.bolar.pack(fill= tk.X)
             self.beuro.pack(fill= tk.X)
             self.breal.pack(fill= tk.X)
+            self.bbitcoin.pack(fill= tk.X)
+            self.atualizado['text'] = data
 
             self.resultado['text'] = ""
-            self.news['text'] = noticia
+            self.news['text'] = detalhes+noticia
             
             
 
@@ -145,6 +156,8 @@ class App(tk.Tk):
         self.bolar.pack_forget()
         self.beuro.pack_forget()
         self.breal.pack_forget()
+        self.bbitcoin.pack_forget()
+        self.atualizado['text'] = ""
 
         self.qeuro.pack()
         self.conv.pack()
@@ -159,7 +172,8 @@ class App(tk.Tk):
         def converteae():
             self.valor_dolar = str(round((1/cotacaodolar)*float(self.qreal.get()),2))
             self.valor_euro = str(round((1/cotacaoeuro)*float(self.qreal.get()),2))
-            self.resultado['text'] = self.valor_euro + " Euros\n" + self.valor_dolar + " Dólares" 
+            self.valor_bitcoin = str(round((1/cotacaobitcoin)*float(self.qreal.get()),5))
+            self.resultado['text'] = self.valor_euro + " Euros\n" + self.valor_dolar + " Dólares\n" + self.valor_bitcoin + " Bitcoins"
         def voltar():
             self.qreal.pack_forget()
             self.conv.pack_forget()
@@ -170,9 +184,11 @@ class App(tk.Tk):
             self.bolar.pack(fill= tk.X)
             self.beuro.pack(fill= tk.X)
             self.breal.pack(fill= tk.X)
+            self.bbitcoin.pack(fill= tk.X)
+            self.atualizado['text'] = data
 
             self.resultado['text'] = ""
-            self.news['text'] = noticia
+            self.news['text'] = detalhes+noticia
             
             
 
@@ -186,14 +202,55 @@ class App(tk.Tk):
         self.bolar.pack_forget()
         self.beuro.pack_forget()
         self.breal.pack_forget()
+        self.bbitcoin.pack_forget()
+        self.atualizado['text'] = ""
 
         self.qreal.pack()
         self.conv.pack()
         self.bvoltar.pack()
         self.resultado.pack()
         
-    
+    def conversorbit(self):
+        def converteae():
+            self.valor_dolar = str(round((cotacaobitcoin/cotacaodolar)*float(self.qbit.get()),2))
+            self.valor_euro = str(round((cotacaobitcoin/cotacaoeuro)*float(self.qbit.get()),2))
+            self.valor_real = str(round(cotacaobitcoin*float(self.qbit.get()),2))
+            self.resultado['text'] = self.valor_euro + " Euros\n" + self.valor_dolar + " Dólares\n"+ self.valor_real + " Reais"
+        def voltar():
+            self.qbit.pack_forget()
+            self.conv.pack_forget()
+            self.resultado.pack_forget()
+            self.bvoltar.pack_forget()
 
+            self.news.pack()
+            self.bolar.pack(fill= tk.X)
+            self.beuro.pack(fill= tk.X)
+            self.breal.pack(fill= tk.X)
+            self.bbitcoin.pack(fill= tk.X)
+            self.atualizado['text'] = data
+
+            self.resultado['text'] = ""
+            self.news['text'] = detalhes+noticia
+            
+            
+
+
+      
+        self.qbit = tk.Entry(self)
+        self.news['text'] = "Valor em Bitcoin:"
+        self.conv = tk.Button(self,text="Converter", command= converteae)
+        self.bvoltar = tk.Button(self,text="Voltar", command= voltar)
+
+        self.bolar.pack_forget()
+        self.beuro.pack_forget()
+        self.breal.pack_forget()
+        self.bbitcoin.pack_forget()
+        self.atualizado['text'] = ""
+
+        self.qbit.pack()
+        self.conv.pack()
+        self.bvoltar.pack()
+        self.resultado.pack()
 
 
 
